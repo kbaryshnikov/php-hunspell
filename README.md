@@ -2,6 +2,24 @@
 
 ## Building from source
 
+### Install gcc 4.8 for C++11 support
+
+Add to /etc/apt/sources.list:
+```
+# new gcc
+deb http://ppa.launchpad.net/ubuntu-toolchain-r/test/ubuntu precise main # apt-key adv --keyserver keyserver.ubuntu.com --recv-keys BA9EF27F
+```
+
+Run as root:
+
+```
+apt-key adv --keyserver keyserver.ubuntu.com --recv-keys BA9EF27F
+apt-get update
+apt-get install gcc-4.8 g++-4.8
+update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-4.8 20
+update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 20
+```
+
 ### Install required packages
 
 ```
