@@ -7,6 +7,18 @@ namespace PhpHunspellExtension {
 static const auto NAME = "hunspell";
 static const auto VERSION = "0.1";
 
+class HashMgrMock {
+public:
+    int tablesize;
+};
+
+class HunspellMock {
+public:
+    void *pAMgr;
+    HashMgrMock *pHMgr[MAXDIC];
+    int maxdic;
+};
+
 class Hunspell : public Php::Base {
 
 public:
@@ -38,7 +50,8 @@ public:
             throw Php::Exception("dic_path required");
         }
         
-        return _addDictionary(dic_path);
+        auto result = _addDictionary(dic_path);
+        return result;
     }
 
     Php::Value spell(Php::Parameters &params) {
@@ -123,6 +136,23 @@ private:
 
     void _initHunspell(const char *dic_path, const char *aff_path) {
         hunspell = new ::Hunspell(aff_path, dic_path);
+        if (!_isDictLoaded(0)) {
+            throw Php::Exception("Dictionary not loaded");
+        }
+    }
+
+    bool _isDictLoaded(unsigned int index = MAXDIC) {
+        if (index > MAXDIC) {
+            return false;
+        }
+        HunspellMock *mock = (HunspellMock *)(void *)(hunspell);
+        if (index == MAXDIC) {
+            index = mock->maxdic - 1;
+        }
+        if (index < 0) {
+            return false;
+        }
+        return mock->pHMgr[index] && (mock->pHMgr[index]->tablesize > 0);
     }
 
     ::Hunspell *_h() {
@@ -147,7 +177,11 @@ private:
     }
 
     bool _addDictionary(const char *dic_path) {
-        return _h()->add_dic(dic_path) == 0;
+        bool isLoaded = _h()->add_dic(dic_path) == 0;
+        if (isLoaded) {
+            isLoaded = _isDictLoaded();
+        }
+        return isLoaded;
     }
 
     void _suggest(const char *word, Php::Array &result) {
@@ -209,5 +243,6 @@ private:
     }
 
 };
+
 
 }
