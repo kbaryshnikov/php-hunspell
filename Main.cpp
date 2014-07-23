@@ -122,6 +122,16 @@ extern "C" {
         hunspell.method("getDictionaryEncoding", &PhpHunspellExtension::Hunspell::getDictionaryEncoding);
         hunspell.method("getWordChars", &PhpHunspellExtension::Hunspell::getWordChars);
 
+#ifdef HUNSPELL_EXPERIMENTAL
+        hunspell.method("suggestAuto", &PhpHunspellExtension::Hunspell::suggestAuto, {
+            Php::ByVal("word", Php::Type::String),
+        });
+
+        hunspell.method("suggestPosStems", &PhpHunspellExtension::Hunspell::suggestPosStems, {
+            Php::ByVal("word", Php::Type::String),
+        });
+#endif
+
         extension.add(std::move(hunspell));
         
         return extension;

@@ -43,3 +43,14 @@ cd php-hunspell
 make
 sudo make install
 ```
+
+### Building with hunspell experimental features
+
+Install libhunspell and libhunspell packages from http://symbi.org/files/hunspell/
+
+```
+sudo dpkg -i libhunspell-dev_1.3.3-1_amd64.deb
+sudo dpkg -i libhunspell-1.3-0_1.3.3-1_amd64.deb
+```
+
+When building the extension, run ```FLAGS='-DHUNSPELL_EXPERIMENTAL' make -e``` instead of ```make```.

@@ -115,6 +115,22 @@ public:
         return _h()->get_wordchars();
     }
 
+#ifdef HUNSPELL_EXPERIMENTAL
+    Php::Value suggestAuto(Php::Parameters &params) {
+        const char *word = params[0];
+        Php::Array result;
+        _suggestAuto(word, result);
+        return result;
+    }
+
+    Php::Value suggestPosStems(Php::Parameters &params) {
+        const char *word = params[0];
+        Php::Array result;
+        _suggestPosStems(word, result);
+        return result;
+    }
+#endif
+
 private:
     ::Hunspell *hunspell = NULL;
 
@@ -241,6 +257,26 @@ private:
         _h()->free_list(&stems, stems_count);
         _h()->free_list(&slst, slst_count);
     }
+
+#ifdef HUNSPELL_EXPERIMENTAL
+    void _suggestAuto(const char *word, Php::Array &result) {
+        char **slst = NULL;
+        int slst_count = _h()->suggest_auto(&slst, word);
+        for (int i = 0; i < slst_count; ++i) {
+            result[i] = slst[i];
+        }
+        _h()->free_list(&slst, slst_count);
+    }
+
+    void _suggestPosStems(const char *word, Php::Array &result) {
+        char **slst = NULL;
+        int slst_count = _h()->suggest_pos_stems(&slst, word);
+        for (int i = 0; i < slst_count; ++i) {
+            result[i] = slst[i];
+        }
+        _h()->free_list(&slst, slst_count);
+    }
+#endif
 
 };
 
