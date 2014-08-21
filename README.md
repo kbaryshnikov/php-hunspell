@@ -38,7 +38,7 @@ sudo make install
 ### Build and install php-hunspell
 
 ```
-git clone git@bitbucket.org:lingvixdev/php-hunspell.git
+git clone git@github.com:kbaryshnikov/php-hunspell.git
 cd php-hunspell
 make
 sudo make install
